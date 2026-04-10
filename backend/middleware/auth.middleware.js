@@ -9,8 +9,19 @@ export const auth = (req, res, next)=>{
     try{
       const decoded = jwt.verify(token, process.env.ACCESS_SECRET_KEY);
       req.userId = decoded.userId;
+      req.userRole = decoded.role;
       next();
     } catch(err){ 
       return res.status(400).json({error: "invalid token"});
     }
+}
+
+export const authorizeRoles = (...allowedRoles)=>{
+  return (req, res, next) => {
+    if (!allowedRoles.includes(req.userRole)){
+      console.log(req.userRole)
+      return res.status(403).json({error: "Forbidden"});
+    } 
+    next();
+  }
 }

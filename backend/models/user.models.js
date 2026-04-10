@@ -30,6 +30,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  role:{
+    type: String,
+    enum: ["admin", "user"],
+    required: true,
+    default: "user"
+  },
   sessions:[sessionSchema]
 }, {timestamps: true});
 
@@ -37,17 +43,17 @@ userSchema.methods.comparePassword = async function(password){
   return await bcrypt.compare(password, this.password)
 }
 
-userSchema.methods.generateAccessToken = async function(){
-  return await jwt.sign(
-    {userId : this._id},
+userSchema.methods.generateAccessToken = function(){
+  return jwt.sign(
+    {userId : this._id, role: this.role},
     process.env.ACCESS_SECRET_KEY,
     {expiresIn: "15m"}
   );
 };
 
-userSchema.methods.generateRefreshToken = async function(){
-  return await jwt.sign(
-    {userId : this._id},
+userSchema.methods.generateRefreshToken = function(){
+  return jwt.sign(
+    {userId : this._id, role: this.role},
     process.env.REFRESH_SECRET_KEY,
     {expiresIn: "7d"}
   );

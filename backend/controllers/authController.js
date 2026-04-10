@@ -28,9 +28,9 @@ export const handleRegisterUser = async(req, res)=>{
 
 export const handleLoginUser = async(req, res)=>{
   try{
-    const {email, password} = req.body;
+    const {email, username, password} = req.body;
 
-    const user = await User.findOne({email});
+    const user = await User.findOne({$or: [{email}, {username}]});
 
     if (!user){
       return res.status(400).json({error: "user does not exist"});
@@ -41,8 +41,8 @@ export const handleLoginUser = async(req, res)=>{
       return res.status(400).json({error: "invalid credentials"});
     } 
 
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
+    const accessToken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
 
     const parser = new UAParser(req.headers["user-agent"]);
     const result = parser.getResult();
@@ -99,7 +99,7 @@ export const handleRefresh = async(req, res)=>{
       return res.status(401).json({msg: "invalid session"});
     }
 
-    const accessToken = user.generateAccessToken();
+    const accessToken = await user.generateAccessToken();
     res.status(200).json({accessToken});
   }
   catch(error){
@@ -140,22 +140,20 @@ export const handleLogoutAll = async (req, res) => {
     }
     try{
       const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY);
+
+      const user = await User.findById(decoded.userId);
+
+      user.sessions = [];
+
+      await user.save();
+
+      res.clearCookie("refreshToken");
+
+      res.json({ msg: "logged out from all devices" });
     }
     catch(error){
       return res.status(401).json({msg: "invalid refresh token"});
     }
-    
-
-    const user = await User.findById(decoded.userId);
-
-    user.sessions = [];
-
-    await user.save();
-
-    res.clearCookie("refreshToken");
-
-    res.json({ msg: "logged out from all devices" });
-
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

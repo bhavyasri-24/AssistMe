@@ -1,6 +1,6 @@
 import express from "express"
 import {handleAddComment, handleDeleteComment, handleGetComments, handleUpdateComment} from "../controllers/commentController.js"
-import {auth} from "../middleware/auth.middleware.js"
+import {auth, authorizeRoles} from "../middleware/auth.middleware.js"
 
 const commentRouter = express.Router();
 

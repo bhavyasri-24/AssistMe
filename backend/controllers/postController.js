@@ -84,7 +84,7 @@ export const handleDeletePost = async(req, res)=>{
 
     if (!post) return res.status(404).json({error: "post not found"});
 
-    if (req.userId === post.user.toString()){
+    if (req.userId === post.user.toString() || req.userRole === "admin"){
       await Post.findByIdAndDelete(id);
       res.status(200).json({message: "Post deleted successfully"});
       }

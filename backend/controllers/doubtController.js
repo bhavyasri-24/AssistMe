@@ -84,7 +84,7 @@ export const handleDeleteDoubt = async(req, res)=>{
 
     if (!doubt) return res.status(404).json({error: "doubt not found"});
 
-    if (req.userId === doubt.user.toString()){
+    if (req.userId === doubt.user.toString() || req.userRole === "admin"){
       await Doubt.findByIdAndDelete(id);
       res.status(200).json({message: "Doubt deleted successfully"});
       }

@@ -1,9 +1,10 @@
-import mongoose from "mongoose"
-import express from "express"
 import User from "../models/user.models.js"
 import bcrypt from "bcrypt"
 
 
+export const handleRegisterUser = async(req, res)=>{
+
+}
 export const handleGetUserById = async(req, res)=>{
   try{
     const user = await User.findById(req.params.id); 
@@ -28,6 +29,10 @@ export const handleUpdateUserById = async(req, res)=>{
       return res.status(404).json({error: "user not found"});
     } 
 
+    if (req.userId !== user._id.toString()){
+      return res.status(401).json({error: "unauthorized"});
+    }
+
     if (username) user.username = username;
     if (email) user.email = email;
     if (password) user.password = await bcrypt.hash(password, 10);
@@ -42,6 +47,9 @@ export const handleUpdateUserById = async(req, res)=>{
 
 export const handleDeleteUserById = async(req, res)=>{
   try{
+    if (req.userId !== req.params.id && req.userRole !== "admin"){
+      return res.status(401).json({error: "unauthorized"});
+    }
     const deletedUser = await User.findByIdAndDelete(req.params.id);
 
     if (!deletedUser){
@@ -51,5 +59,15 @@ export const handleDeleteUserById = async(req, res)=>{
   }
   catch(error){
     res.status(500).json({error: error.message})
+  }
+}
+
+export const handleGetAllUsers = async(req, res)=>{
+  try{
+    const users = await User.find({});
+    res.status(200).json(users);
+  }
+  catch(error){
+    res.status(500).json({error: error.message});
   }
 }

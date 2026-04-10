@@ -55,7 +55,7 @@ export const handleDeleteComment = async(req, res) => {
 
     if (comment.post.toString() !== id) return res.status(400).json({error:"comment does ot belong to this post"});
 
-    if (comment.user.toString() !== userId) return res.status(403).json({error: "forbidden"});
+    if (comment.user.toString() !== userId && req.userRole !== "admin") return res.status(403).json({error: "forbidden"});
 
     await Comment.findByIdAndDelete(commentId);
 

@@ -1,11 +1,13 @@
 import express from "express"
-import {handleGetUserById, handleDeleteUserById, handleUpdateUserById} from "../controllers/userController.js"
+import {handleGetUserById, handleDeleteUserById, handleUpdateUserById, handleGetAllUsers} from "../controllers/userController.js"
+import {auth, authorizeRoles} from "../middleware/auth.middleware.js"
 
 const userRouter = express.Router();
 
-userRouter.get("/:id", handleGetUserById).
-delete("/:id", handleDeleteUserById).
-put("/:id", handleUpdateUserById);
+userRouter.get("/admin/", auth, authorizeRoles("admin"), handleGetAllUsers)
+userRouter.get("/:id", handleGetUserById)
+userRouter.delete("/:id", auth, handleDeleteUserById)
+userRouter.put("/:id", auth, handleUpdateUserById)
 
 
 export default userRouter;

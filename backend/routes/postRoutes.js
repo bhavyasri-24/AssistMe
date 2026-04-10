@@ -7,7 +7,7 @@ const postRouter = express.Router();
 postRouter.post("/", auth, handleCreatePost);
 postRouter.get("/", handleGetAllPosts);
 postRouter.put("/:id", auth, handleUpdatePost);
-postRouter.get("/:id", auth, handleGetPost);
+postRouter.get("/:id", handleGetPost);
 postRouter.delete("/:id", auth, handleDeletePost);
 
 export default postRouter;

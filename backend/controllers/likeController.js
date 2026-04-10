@@ -8,7 +8,7 @@ export const handleToggleLike = async (req, res) =>{
     const postId = req.params.id;
     const userId = req.userId;
 
-    const post = Post.findOne(postId);
+    const post = await Post.findById(postId);
     if (!post) return res.status(404).json({error: "post not found"});
 
     const like = await Like.findOne({user: userId, post: postId});

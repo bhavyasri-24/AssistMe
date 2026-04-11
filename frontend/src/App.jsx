@@ -1,36 +1,24 @@
-import { useState } from 'react'
-import './App.css'
-import axios from 'axios'
-import { useEffect } from 'react';
-// import cors from 'cors';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MainLayout from "./layouts/MainLayout.jsx";
+import Posts from "./features/posts/pages/Posts.jsx";
+import Doubts from "./features/doubts/pages/Doubts.jsx";
+import Login from "./features/auth/pages/Login.jsx";
+import Register from "./features/auth/pages/Register.jsx";
 
 
 function App() {
-  const [jokes, setJokes] = useState([]);
-  useEffect(()=>{
-    axios.get('/api/jokes')
-    .then((response)=>{
-      setJokes(response.data)
-    })
-    .catch((error)=>{
-      console.log(error);
-    })
-  })
   return (
-    <>
-      <h1>Basic full stack with chai</h1>
-      <p>Jokes: {jokes.length}</p>
-
-      {
-        jokes.map((joke, index)=>(
-          <div key = {joke.id}>
-            <h3>{joke.title}</h3>
-            <p>{joke.joke}</p>
-          </div>
-        ))
-      }
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/" element={<Posts />} />
+          <Route path="/doubts" element={<Doubts />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

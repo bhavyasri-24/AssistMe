@@ -1,12 +1,12 @@
-import {registerUser} from "../services/authService.js"
-import AuthForm from "../components/AuthForm.jsx"
+import { registerUser } from "../services/authService.js";
+import AuthForm from "../components/AuthForm.jsx";
 
-export default function Register(){
-  const handleRegisterUser = async(data)=>{
-    try{
+export default function Register() {
+  const handleRegisterUser = async (data) => {
+    try {
       const res = await registerUser(data);
       console.log(res);
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
   };
@@ -14,7 +14,7 @@ export default function Register(){
   return (
     <div>
       <h1>Register</h1>
-      <AuthForm type="register" onSubmit={handleRegisterUser}/>
+      <AuthForm type="register" onSubmit={handleRegisterUser} />
     </div>
-  )
+  );
 }

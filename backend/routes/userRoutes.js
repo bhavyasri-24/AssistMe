@@ -1,6 +1,6 @@
 import express from "express"
-import {handleGetUserById, handleDeleteUserById, handleUpdateUserById, handleGetAllUsers} from "../controllers/userController.js"
-import {auth, authorizeRoles} from "../middleware/auth.middleware.js"
+import { handleGetUserById, handleDeleteUserById, handleUpdateUserById, handleGetAllUsers } from "../controllers/userController.js"
+import { auth, authorizeRoles } from "../middleware/auth.middleware.js"
 
 const userRouter = express.Router();
 

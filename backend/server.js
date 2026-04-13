@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
   origin: "http://localhost:5173",
-  credentials: true              
+  credentials: true
 }));
 
 app.use("/api/posts", postRouter);
@@ -30,6 +30,6 @@ app.use("/api/doubts", doubtRouter);
 app.use("/api/comments", commentRouter);
 app.use("/api/likes", likeRouter);
 
-app.listen(process.env.PORT, ()=>{
+app.listen(process.env.PORT, () => {
   console.log(`server running on port ${process.env.PORT}`);
 })

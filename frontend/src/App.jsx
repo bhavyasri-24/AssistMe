@@ -1,56 +1,47 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout.jsx";
+
 import Posts from "./features/posts/pages/Posts.jsx";
+import PostDetails from "./features/posts/pages/PostDetails.jsx";
 import Doubts from "./features/doubts/pages/Doubts.jsx";
-import Login from "./features/auth/pages/Login.jsx";
-import Register from "./features/auth/pages/Register.jsx";
-import ProtectedRoute from "./routes/ProtectedRoute.jsx";
+
 import Profile from "./features/profile/pages/Profile.jsx";
+
 import MyPosts from "./features/activity/pages/MyPosts.jsx";
 import MyDoubts from "./features/activity/pages/MyDoubts.jsx";
 import MyRooms from "./features/activity/pages/MyRooms.jsx";
+
+import CreatePost from "./features/posts/pages/CreatePost.jsx";
+import CreateDoubt from "./features/doubts/pages/CreateDoubt.jsx";
+
+import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<MainLayout />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+
+          {/* Public routes */}
           <Route path="/" element={<Posts />} />
+          <Route path="/posts/:id" element={<PostDetails />} />
           <Route path="/doubts" element={<Doubts />} />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/my-posts"
-            element={
-              <ProtectedRoute>
-                <MyPosts />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/my-doubts"
-            element={
-              <ProtectedRoute>
-                <MyDoubts />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/my-rooms"
-            element={
-              <ProtectedRoute>
-                <MyRooms />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/create-post" element={<CreatePost />} />
+          <Route path="/create-doubt" element={<CreateDoubt />} />
+
+          {/* Protected routes */}
+          <Route element={<ProtectedRoute />}>
+
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/my-posts" element={<MyPosts />} />
+            <Route path="/my-doubts" element={<MyDoubts />} />
+            <Route path="/my-rooms" element={<MyRooms />} />
+
+            <Route path="/my-posts/:id/edit" element={<CreatePost />} />
+            <Route path="/my-doubts/:id/edit" element={<CreateDoubt />} />
+
+          </Route>
+
         </Route>
       </Routes>
     </BrowserRouter>

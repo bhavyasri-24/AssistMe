@@ -5,6 +5,7 @@ import { logoutAll, logoutUser } from "../features/auth/services/authService";
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
+  const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -14,6 +15,8 @@ export default function AuthProvider({ children }) {
       setUser(JSON.parse(storedUser));
       setAccessToken(storedAccessToken);
     }
+
+    setAuthReady(true);
   }, []);
 
   const login = (data) => {
@@ -54,7 +57,17 @@ export default function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, accessToken, login, logout, logoutAllDevices, updateUser }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        accessToken,
+        authReady,
+        login,
+        logout,
+        logoutAllDevices,
+        updateUser,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

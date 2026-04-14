@@ -57,7 +57,7 @@ export const handleUpdateDoubt = async(req, res)=>{
       return res.status(404).json({ error: "doubt not found" });
     }
 
-    if (req.userId !== doubt.user.toString()) {
+    if (req.userId.toString() !== doubt.user.toString()) {
       return res.status(401).json({ error: "Unauthorized" });
     }
     
@@ -84,7 +84,7 @@ export const handleDeleteDoubt = async(req, res)=>{
 
     if (!doubt) return res.status(404).json({error: "doubt not found"});
 
-    if (req.userId === doubt.user.toString() || req.userRole === "admin"){
+    if (req.userId.toString() === doubt.user.toString() || req.userRole === "admin"){
       await Doubt.findByIdAndDelete(id);
       res.status(200).json({message: "Doubt deleted successfully"});
       }
@@ -110,7 +110,7 @@ export const handleResolveDoubt = async(req, res)=>{
       return res.status(404).json({error: "doubt not found"});
     }
 
-    if (req.userId !== doubt.user.toString()){
+    if (req.userId.toString() !== doubt.user.toString()){
       return res.status(401).json({error: "Unauthorized"});
     }
     doubt.isResolved = !doubt.isResolved;
@@ -123,3 +123,14 @@ export const handleResolveDoubt = async(req, res)=>{
   }
 }
 
+export const handleGetMyDoubts = async(req, res)=>{
+  try{
+    const userId = req.userId;
+    const doubts = await Doubt.find({user: userId}).populate("user", "username email");
+    res.status(200).json(doubts);
+  }
+  catch(error){
+    console.error("MY DOUBTS ERROR:", error); // 🔥 ADD THIS
+    res.status(500).json({error: error.message}); // 🔥 CHANGE 400 → 500
+  }
+}

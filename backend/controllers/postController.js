@@ -57,7 +57,7 @@ export const handleUpdatePost = async(req, res)=>{
       return res.status(404).json({ error: "post not found" });
     }
 
-    if (req.userId !== post.user.toString()) {
+    if (req.userId.toString() !== post.user.toString()) {
       return res.status(401).json({ error: "Unauthorized" });
     }
     
@@ -84,7 +84,7 @@ export const handleDeletePost = async(req, res)=>{
 
     if (!post) return res.status(404).json({error: "post not found"});
 
-    if (req.userId === post.user.toString() || req.userRole === "admin"){
+    if (req.userId.toString() === post.user.toString() || req.userRole === "admin"){
       await Post.findByIdAndDelete(id);
       res.status(200).json({message: "Post deleted successfully"});
       }
@@ -93,6 +93,15 @@ export const handleDeletePost = async(req, res)=>{
     }
   }
   catch(error){
+    res.status(400).json({error: error.message});
+  }
+}
+
+export const handleGetMyPosts = async(req, res)=>{
+  try{
+    const posts = await Post.find({user: req.userId}).populate("user", "username email");
+    res.status(200).json(posts);
+  }catch(error){
     res.status(400).json({error: error.message});
   }
 }

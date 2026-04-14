@@ -165,3 +165,9 @@ export const handleLogoutAll = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const getMe = async(req, res)=>{
+  res.status(200).json({
+    user: req.user,
+  });
+}

@@ -1,5 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import Avatar from "react-avatar";
+import formatTime from "../../../utils/timeUtils";
+import ImageViewer from "../../../components/ImageViewer";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+
 
 export default function DoubtCard({
   _id,
@@ -9,10 +16,17 @@ export default function DoubtCard({
   isOwner,
   onDelete,
   onToggle,
+  user,
+  createdAt,
+  images,
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+const [viewerOpen, setViewerOpen] = useState(false);
+const [activeIndex, setActiveIndex] = useState(0);
   const ref = useRef();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClick = (e) => {
@@ -26,11 +40,24 @@ export default function DoubtCard({
 
   return (
     <div className="relative rounded-xl bg-white p-4 shadow-sm hover:shadow-md">
-      
       {/* Top */}
       <div className="flex justify-between items-start">
-        <h2 className="text-base font-semibold">{title}</h2>
+        {/* 👤 User info */}
+        <div className="flex items-center gap-3">
+          <Avatar round size="32" src={user?.avatar} name={user?.username} />
 
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-zinc-900">
+              {user?.username || "User"}
+            </span>
+
+            <span className="text-xs text-zinc-500">
+              {formatTime(createdAt)}
+            </span>
+          </div>
+        </div>
+
+        {/* Menu */}
         {isOwner && (
           <div ref={ref} className="relative">
             <button onClick={() => setMenuOpen(!menuOpen)}>⋮</button>
@@ -59,13 +86,51 @@ export default function DoubtCard({
       </div>
 
       {/* Description */}
-      <p className="mt-2 text-sm text-zinc-600 line-clamp-2">
-        {description}
-      </p>
+      <p className="mt-2 text-sm text-zinc-600 line-clamp-2">{description}</p>
+
+      {images?.length > 0 && (
+  <div className="relative mt-3">
+
+    <img
+      src={images[currentIndex]}
+      onClick={() => {
+        setActiveIndex(currentIndex);
+        setViewerOpen(true);
+      }}
+      className="w-full h-64 object-cover rounded-lg cursor-pointer"
+    />
+
+    {currentIndex > 0 && (
+      <button
+        onClick={() => setCurrentIndex((p) => p - 1)}
+        className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
+      >
+        <ChevronLeft size={16} />
+      </button>
+    )}
+
+    {currentIndex < images.length - 1 && (
+      <button
+        onClick={() => setCurrentIndex((p) => p + 1)}
+        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
+      >
+        <ChevronRight size={16} />
+      </button>
+    )}
+  </div>
+)}
+
+{viewerOpen && (
+  <ImageViewer
+    images={images}
+    index={activeIndex}
+    setIndex={setActiveIndex}
+    onClose={() => setViewerOpen(false)}
+  />
+)}
 
       {/* Bottom */}
       <div className="mt-4 flex items-center justify-between">
-
         {/* Status */}
         <div className="flex items-center gap-2 text-xs">
           <span
@@ -79,9 +144,8 @@ export default function DoubtCard({
         </div>
 
         <div className="flex gap-2">
-          
           {/* Join/View */}
-          <button className="bg-zinc-900 text-white px-3 py-1 text-xs rounded-md">
+          <button onClick={() => navigate(`/room/${_id}`)} className="bg-zinc-900 text-white px-3 py-1 text-xs rounded-md">
             {isResolved ? "View" : "Join"}
           </button>
 

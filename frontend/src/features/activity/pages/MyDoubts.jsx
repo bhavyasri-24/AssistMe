@@ -25,7 +25,6 @@ export default function MyDoubts() {
         setError("");
 
         const data = await getMyDoubts(); // ✅
-        console.log(data);
         setDoubts(data); // ✅
       } catch (err) {
         setError(err.response?.data?.message || "Unable to load your doubts.");

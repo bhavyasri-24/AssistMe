@@ -32,7 +32,6 @@ export const auth = async (req, res, next) => {
 export const authorizeRoles = (...allowedRoles)=>{
   return (req, res, next) => {
     if (!allowedRoles.includes(req.userRole)){
-      console.log(req.userRole)
       return res.status(403).json({error: "Forbidden"});
     } 
     next();

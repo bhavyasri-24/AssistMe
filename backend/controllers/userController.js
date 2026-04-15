@@ -1,6 +1,6 @@
 import User from "../models/user.models.js"
 import bcrypt from "bcrypt"
-
+import cloudinary from "../config/cloudinary.js"
 
 export const handleRegisterUser = async (req, res) => {
   try {
@@ -54,32 +54,53 @@ export const handleGetUserById = async (req, res) => {
 
 export const handleUpdateUserById = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, removeAvatar } = req.body;
+
     const user = await User.findById(req.params.id);
+
 
     if (!user) {
       return res.status(404).json({ error: "user not found" });
     }
 
-    if (req.userId !== user._id.toString()) {
+
+    if (req.userId.toString() !== user._id.toString()) {
       return res.status(401).json({ error: "unauthorized" });
     }
 
+    // 🔥 Basic fields
     if (username) user.username = username;
     if (email) user.email = email;
     if (password) user.password = await bcrypt.hash(password, 10);
 
+    // 🔥 Remove avatar
+    if (removeAvatar === "true") {
+      user.avatar = null;
+    }
+
+    // 🔥 Upload new avatar
+    if (req.file) {
+      const base64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+
+      const result = await cloudinary.uploader.upload(base64, {
+        folder: "avatars",
+      });
+
+      user.avatar = result.secure_url;
+    }
+
     await user.save();
+
     res.status(200).json(user);
-  }
-  catch (error) {
+
+  } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
+};
 
 export const handleDeleteUserById = async (req, res) => {
   try {
-    if (req.userId !== req.params.id && req.userRole !== "admin") {
+    if (req.userId.toString() !== req.params.id && req.userRole !== "admin") {
       return res.status(401).json({ error: "unauthorized" });
     }
     const deletedUser = await User.findByIdAndDelete(req.params.id);

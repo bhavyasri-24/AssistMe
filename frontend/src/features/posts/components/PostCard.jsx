@@ -3,6 +3,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Heart, MessageCircle } from "lucide-react";
 import useAuth from "../../../hooks/useAuth";
 import { addPostComment, getPostComments } from "../services/postService.js";
+import Avatar from "react-avatar";
+import formatTime from "../../../utils/timeUtils.js";
+import ImageViewer from "../../../components/ImageViewer.jsx";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function PostCard({
   _id,
@@ -14,9 +18,11 @@ export default function PostCard({
   isOwner = false,
   onDelete,
   onLike,
+  user,
   createdAt,
+  images = [],
 }) {
-  const { user } = useAuth();
+  const { user: authUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -30,6 +36,10 @@ export default function PostCard({
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const [localCommentsCount, setLocalCommentsCount] = useState(commentsCount);
 
@@ -86,38 +96,6 @@ export default function PostCard({
     }
   };
 
-  const formatTime = (date) => {
-  const now = new Date();
-  const postTime = new Date(date);
-
-  const diff = Math.floor((now - postTime) / 1000);
-
-  if (diff < 60) return "just now";
-
-  if (diff < 3600) {
-    const mins = Math.floor(diff / 60);
-    return `${mins}m`;
-  }
-
-  if (diff < 86400) {
-    const hours = Math.floor(diff / 3600);
-    return `${hours}h`;
-  }
-
-  if (diff < 2592000) { // 30 days
-    const days = Math.floor(diff / 86400);
-    return `${days}d`;
-  }
-
-  if (diff < 31536000) { // 12 months
-    const months = Math.floor(diff / 2592000);
-    return `${months}mo`;
-  }
-
-  const years = Math.floor(diff / 31536000);
-  return `${years}y`;
-};
-
   const handleCommentsToggle = async () => {
     const next = !commentsOpen;
     setCommentsOpen(next);
@@ -163,14 +141,23 @@ export default function PostCard({
     <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm hover:shadow-md transition">
       {/* 🔝 Header */}
       <div className="flex justify-between items-start">
-        <div className="flex justify-between items-center gap-3">
-          {/* LEFT */}
-          <p className="text-sm font-semibold text-zinc-900">
-            {user?.username || "User"}
-          </p>
+        <div className="flex items-center gap-3 mb-2">
+          <Avatar
+            round
+            size="35"
+            src={user?.avatar || undefined}
+            name={user?.username}
+          />
 
-          {/* RIGHT */}
-          <p className="text-xs text-zinc-500">   {formatTime(createdAt)}</p>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium">
+              {user?.username || "User"}
+            </span>
+
+            <span className="text-xs text-zinc-500">
+              {formatTime(createdAt)}
+            </span>
+          </div>
         </div>
 
         {isOwner && (
@@ -212,6 +199,49 @@ export default function PostCard({
           {description}
         </p>
       </div>
+
+      {images?.length > 0 && (
+        <div className="relative mt-3">
+          {/* Image */}
+          <img
+            src={images[currentIndex]}
+            onClick={() => {
+              setActiveIndex(currentIndex);
+              setViewerOpen(true);
+            }}
+            className="w-full h-64 object-cover rounded-lg cursor-pointer"
+          />
+
+          {/* Left Arrow */}
+          {currentIndex > 0 && (
+            <button
+              onClick={() => setCurrentIndex((prev) => prev - 1)}
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
+            >
+              <ChevronLeft size={20} />
+            </button>
+          )}
+
+          {/* Right Arrow */}
+          {currentIndex < images.length - 1 && (
+            <button
+              onClick={() => setCurrentIndex((prev) => prev + 1)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
+            >
+              <ChevronRight size={20} />
+            </button>
+          )}
+        </div>
+      )}
+
+      {viewerOpen && (
+        <ImageViewer
+          images={images}
+          index={activeIndex}
+          setIndex={setActiveIndex}
+          onClose={() => setViewerOpen(false)}
+        />
+      )}
 
       {/* ❤️ 💬 Stats row ONLY */}
       <div className="mt-4 flex items-center justify-between text-sm text-zinc-600">
@@ -267,7 +297,12 @@ export default function PostCard({
             <>
               {visibleComments.map((comment) => (
                 <div key={comment._id} className="flex gap-2">
-                  <div className="h-8 w-8 rounded-full bg-zinc-300" />
+                  <Avatar
+                    round
+                    size="28"
+                    src={comment.user?.avatar || undefined}
+                    name={comment.user?.username}
+                  />
                   <div className="bg-zinc-100 rounded-xl px-3 py-2 text-sm">
                     <p className="font-medium text-zinc-900">
                       {comment.user?.username || "User"}

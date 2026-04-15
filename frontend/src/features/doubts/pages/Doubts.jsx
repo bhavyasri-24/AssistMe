@@ -12,7 +12,6 @@ export default function Doubts() {
         const res = await getDoubts();
         setDoubts(res.data);
       } catch (err) {
-        console.error(err);
       } finally {
         setLoading(false);
       }

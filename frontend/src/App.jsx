@@ -14,6 +14,8 @@ import MyRooms from "./features/activity/pages/MyRooms.jsx";
 import CreatePost from "./features/posts/pages/CreatePost.jsx";
 import CreateDoubt from "./features/doubts/pages/CreateDoubt.jsx";
 
+import Room from "./features/rooms/pages/Room.jsx";
+
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 
 function App() {
@@ -37,8 +39,12 @@ function App() {
             <Route path="/my-doubts" element={<MyDoubts />} />
             <Route path="/my-rooms" element={<MyRooms />} />
 
+            
+
             <Route path="/my-posts/:id/edit" element={<CreatePost />} />
             <Route path="/my-doubts/:id/edit" element={<CreateDoubt />} />
+
+            <Route path="/room/:id" element={<Room />} />
 
           </Route>
 

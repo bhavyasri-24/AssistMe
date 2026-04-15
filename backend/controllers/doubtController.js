@@ -1,28 +1,44 @@
 import Doubt from "../models/doubt.models.js";
 import mongoose from "mongoose";
 
-export const handleCreateDoubt = async(req, res)=>{
-  const {title, description, isResolved} = req.body;
+import cloudinary from "../config/cloudinary.js";
 
-  try{
-    console.log(req.body);
-    if (!title || !description){
-      return res.status(400).json({error: "title and description are required"})
+export const handleCreateDoubt = async (req, res) => {
+  try {
+    const { title, description } = req.body;
+
+    let imageUrls = [];
+
+    if (req.files && req.files.length > 0) {
+      const uploads = req.files.map(async (file) => {
+        const base64 = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+
+        const result = await cloudinary.uploader.upload(base64, {
+          folder: "doubts",
+        });
+
+        return result.secure_url;
+      });
+
+      imageUrls = await Promise.all(uploads);
     }
-    else{
-      const doubt = await Doubt.create({
-      title, description, isResolved,user: req.userId
+
+    const doubt = await Doubt.create({
+      title,
+      description,
+      images: imageUrls,
+      user: req.userId,
     });
+
     res.status(201).json(doubt);
-    }
-  }catch(error){
-    res.status(500).json({error: error.message});
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-}
+};
 
 export const handleGetAllDoubts = async(req, res)=>{
   try{
-    const doubt = await Doubt.find().populate("user", "username email").sort({createdAt: -1});
+    const doubt = await Doubt.find().populate("user", "username email avatar").sort({createdAt: -1});
 
     res.status(200).json(doubt);
   }catch(error){
@@ -33,7 +49,7 @@ export const handleGetAllDoubts = async(req, res)=>{
 export const handleGetDoubt = async(req, res)=>{
   const id = req.params.id;
   try{
-    const doubt = await Doubt.findById(id).populate("user", "username email");
+    const doubt = await Doubt.findById(id).populate("user", "username email avatar");
     if (!doubt) {
       return res.status(404).json({ error: "doubt not found" });
     }
@@ -126,7 +142,7 @@ export const handleResolveDoubt = async(req, res)=>{
 export const handleGetMyDoubts = async(req, res)=>{
   try{
     const userId = req.userId;
-    const doubts = await Doubt.find({user: userId}).populate("user", "username email");
+    const doubts = (await Doubt.find({user: userId}).populate("user", "username email avatar")).sort({createdAt: -1});
     res.status(200).json(doubts);
   }
   catch(error){

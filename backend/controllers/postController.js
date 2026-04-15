@@ -1,28 +1,45 @@
 import Post from "../models/post.models.js";
 import mongoose from "mongoose";
+import cloudinary from "../config/cloudinary.js";
 
-export const handleCreatePost = async(req, res)=>{
-  const {title, description, tags} = req.body;
 
-  try{
-    console.log(req.body);
-    if (!title || !description){
-      return res.status(400).json({error: "title and description are required"})
+export const handleCreatePost = async (req, res) => {
+  try {
+    const { title, description } = req.body;
+
+    let imageUrls = [];
+
+    if (req.files && req.files.length > 0) {
+      const uploads = req.files.map(async (file) => {
+        const base64 = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+
+        const result = await cloudinary.uploader.upload(base64, {
+          folder: "posts",
+        });
+
+        return result.secure_url;
+      });
+
+      imageUrls = await Promise.all(uploads);
     }
-    else{
-      const post = await Post.create({
-      title, description, tags, user: req.userId
+
+    const post = await Post.create({
+      title,
+      description,
+      images: imageUrls,
+      user: req.userId,
     });
+
+
     res.status(201).json(post);
-    }
-  }catch(error){
-    res.status(500).json({error: error.message});
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-}
+};
 
 export const handleGetAllPosts = async(req, res)=>{
   try{
-    const post = await Post.find().populate("user", "username email").sort({createdAt: -1});
+    const post = await Post.find().populate("user", "username email avatar").sort({createdAt: -1});
 
     res.status(200).json(post);
   }catch(error){
@@ -33,7 +50,7 @@ export const handleGetAllPosts = async(req, res)=>{
 export const handleGetPost = async(req, res)=>{
   const id = req.params.id;
   try{
-    const post = await Post.findById(id).populate("user", "username email");
+    const post = await Post.findById(id).populate("user", "username email avatar");
     if (!post) {
       return res.status(404).json({ error: "post not found" });
     }
@@ -99,7 +116,7 @@ export const handleDeletePost = async(req, res)=>{
 
 export const handleGetMyPosts = async(req, res)=>{
   try{
-    const posts = await Post.find({user: req.userId}).populate("user", "username email");
+    const posts = (await Post.find({user: req.userId}).populate("user", "username email avatar")).sort({createdAt: -1});
     res.status(200).json(posts);
   }catch(error){
     res.status(400).json({error: error.message});

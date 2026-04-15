@@ -1,11 +1,13 @@
 import express from "express"
 import {handleGetAllDoubts, handleCreateDoubt, handleGetDoubt, handleUpdateDoubt, handleDeleteDoubt, handleResolveDoubt, handleGetMyDoubts} from "../controllers/doubtController.js"
 import {auth, authorizeRoles} from "../middleware/auth.middleware.js"
+import upload from "../middleware/upload.js"
+
 
 const doubtRouter = express.Router();
 
 doubtRouter.get("/", handleGetAllDoubts);
-doubtRouter.post("/", auth, handleCreateDoubt);
+doubtRouter.post("/", auth, upload.array("images", 5), handleCreateDoubt);
 doubtRouter.get("/me", auth, handleGetMyDoubts);
 doubtRouter.get("/:id", handleGetDoubt);
 doubtRouter.put("/:id", auth, handleUpdateDoubt);

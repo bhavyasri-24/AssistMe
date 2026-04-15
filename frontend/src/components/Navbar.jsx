@@ -171,7 +171,7 @@ export default function Navbar() {
           if (!isCollapsed) return;
           if (event.target.closest("[data-collapse-toggle]")) return;
           if (event.target.closest("[data-direct-nav]")) return;
-          if (event.target.closest("[data-no-expand]")) return; 
+          if (event.target.closest("[data-no-expand]")) return;
           setIsDesktopCollapsed(false);
         }}
         className={`fixed left-0 top-0 z-40 flex h-screen w-72 max-w-[85vw] flex-col justify-between border-r border-zinc-300 bg-zinc-50 p-4 shadow-sm transition-all duration-300 ease-in-out md:translate-x-0 ${
@@ -341,53 +341,40 @@ export default function Navbar() {
         </div>
 
         {/* Bottom Section */}
-        <div className="relative ">
-          <div className="space-y-2 border-b border-zinc-300 pb-3">
-            {/* Login */}
-            <button data-no-expand
-              className={`group relative flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium w-full transition-colors
-    ${
-      isCollapsed
-        ? "justify-center w-10 h-10 mx-auto hover:bg-zinc-100"
-        : "justify-start bg-zinc-900 text-white hover:bg-zinc-800"
-    }`}
-              onClick={() => openAuthModal("login")}
-            >
-              <LogIn size={18} />
+        <div className="relative">
+          {!user ? (
+            <div className="space-y-2 border-b border-zinc-300 pb-3">
+              {/* Login */}
+              <button
+                data-no-expand
+                className={`group relative flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium w-full transition-colors
+        ${
+          isCollapsed
+            ? "justify-center w-10 h-10 mx-auto hover:bg-zinc-100"
+            : "justify-start bg-zinc-900 text-white hover:bg-zinc-800"
+        }`}
+                onClick={() => openAuthModal("login")}
+              >
+                <LogIn size={18} />
+                {!isCollapsed && <span>Login</span>}
+              </button>
 
-              {!isCollapsed && <span>Login</span>}
-
-              {/* Tooltip (collapsed only) */}
-              {isCollapsed && (
-                <span className="pointer-events-none absolute left-12 top-1/2 -translate-y-1/2 z-50 rounded-md border border-zinc-300 bg-zinc-200 px-2 py-1 text-xs text-zinc-900 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
-                  Login
-                </span>
-              )}
-            </button>
-
-            {/* Signup */}
-            <button data-no-expand
-              className={`group relative flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium w-full  transition-colors
-    ${
-      isCollapsed
-        ? "justify-center w-10 h-10 mx-auto hover:bg-zinc-100"
-        : "justify-start bg-white text-zinc-900 hover:bg-zinc-100"
-    }`}
-              onClick={() => openAuthModal("signup")}
-            >
-              <UserPlus size={18} />
-
-              {!isCollapsed && <span>Signup</span>}
-
-              {/* Tooltip */}
-              {isCollapsed && (
-                <span className="pointer-events-none absolute left-12 top-1/2 -translate-y-1/2 z-50 rounded-md border border-zinc-300 bg-zinc-200 px-2 py-1 text-xs text-zinc-900 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
-                  Signup
-                </span>
-              )}
-            </button>
-          </div>
-          {user ? (
+              {/* Signup */}
+              <button
+                data-no-expand
+                className={`group relative flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium w-full transition-colors
+        ${
+          isCollapsed
+            ? "justify-center w-10 h-10 mx-auto hover:bg-zinc-100"
+            : "justify-start bg-white text-zinc-900 hover:bg-zinc-100"
+        }`}
+                onClick={() => openAuthModal("signup")}
+              >
+                <UserPlus size={18} />
+                {!isCollapsed && <span>Signup</span>}
+              </button>
+            </div>
+          ) : (
             <>
               {/* Profile Button */}
               <button
@@ -407,8 +394,6 @@ export default function Navbar() {
                     size="36"
                     name={user.username}
                     src={user.avatar}
-                    textSizeRatio={2}
-                    color='#2596be'
                   />
                   {!isCollapsed && (
                     <span className="text-sm font-medium text-zinc-900">
@@ -416,62 +401,34 @@ export default function Navbar() {
                     </span>
                   )}
                 </span>
-                {!isCollapsed && (
-                  <ChevronsUpDown size={16} className="text-zinc-700" />
-                )}
+                {!isCollapsed && <ChevronsUpDown size={16} />}
               </button>
 
-              {/* Profile Dropdown */}
+              {/* Dropdown */}
               {showProfileMenu && (
-                <div
-                  data-profile-menu
-                  className="absolute bottom-14 left-0 w-full rounded-md border border-zinc-300 bg-white p-1 shadow-md"
-                >
+                <div className="absolute bottom-14 left-0 w-full rounded-md border bg-white p-1 shadow-md">
                   <button
-                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-zinc-100"
-                    onClick={() => {
-                      setShowProfileMenu(false);
-                      closeSidebarAfterNavigation();
-                      navigate("/profile");
-                    }}
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-zinc-100"
+                    onClick={() => navigate("/profile")}
                   >
                     Profile
                   </button>
 
                   <button
-                    className="mt-1 w-full rounded-md bg-zinc-100 px-3 py-2 text-left text-sm font-bold hover:bg-zinc-200"
+                    className="mt-1 w-full px-3 py-2 text-left text-sm font-bold hover:bg-zinc-200"
                     onClick={handleLogout}
                   >
                     Logout
                   </button>
 
                   <button
-                    className="w-full rounded-md px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                    className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50"
                     onClick={handleLogoutAllDevices}
                   >
                     Logout all devices
                   </button>
                 </div>
               )}
-            </>
-          ) : (
-            <>
-              {/* Login & Signup
-              <div className="space-y-2">
-                <button
-                  className="w-full rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white"
-                  onClick={() => openAuthModal("login")}
-                >
-                  Login
-                </button>
-
-                <button
-                  className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-900"
-                  onClick={() => openAuthModal("signup")}
-                >
-                  Signup
-                </button>
-              </div> */}
             </>
           )}
         </div>

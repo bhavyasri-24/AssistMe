@@ -30,9 +30,7 @@ export default function AuthProvider({ children }) {
   const logout = async () => {
     try {
       await logoutUser();
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
     setUser(null);
     setAccessToken(null);
     localStorage.removeItem("user");
@@ -42,9 +40,7 @@ export default function AuthProvider({ children }) {
   const logoutAllDevices = async () => {
     try {
       await logoutAll();
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
     setUser(null);
     setAccessToken(null);
     localStorage.removeItem("user");

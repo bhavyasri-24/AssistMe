@@ -9,6 +9,10 @@ const doubtSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  images:{
+    type: [String],
+    default: []
+  },
   user:{
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

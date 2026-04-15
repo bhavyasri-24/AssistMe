@@ -71,11 +71,9 @@ userSchema.methods.addSession = async function(token, ip, device, os, ua){
     s.token = token;
     s.ip = ip;
     s.ua = ua;
-    console.log("updated session");
   }
   else{
     this.sessions.push({token, ip, device, os, ua});
-    console.log("added session");
   }
   return await this.save()
 }

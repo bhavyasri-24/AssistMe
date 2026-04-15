@@ -51,7 +51,6 @@ export const handleLoginUser = async(req, res)=>{
     const os = result.os.name || "unknown";
     const ua = result.ua || "unknown";
 
-    console.log("adding session");
 
     await user.addSession(
       refreshToken,

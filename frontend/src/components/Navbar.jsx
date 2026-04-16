@@ -130,7 +130,7 @@ export default function Navbar() {
               src={logo}
               alt="AssistMe logo"
               className="h-7 w-7 rounded-md object-cover"
-              onClick={navigate("/")}
+              onClick={()=>navigate("/")}
             />
             <span className="text-lg font-semibold tracking-tight text-zinc-950">
               AssistMe

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout.jsx";
 
 import Posts from "./features/posts/pages/Posts.jsx";
@@ -23,9 +23,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<MainLayout />}>
-
           {/* Public routes */}
-          <Route path="/" element={<Posts />} />
+          <Route path="/" element={<Navigate to="/posts" replace />} />
+          <Route path="/posts" element={<Posts />} />
           <Route path="/posts/:id" element={<PostDetails />} />
           <Route path="/doubts" element={<Doubts />} />
           <Route path="/create-post" element={<CreatePost />} />
@@ -33,21 +33,16 @@ function App() {
 
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
-
             <Route path="/profile" element={<Profile />} />
             <Route path="/my-posts" element={<MyPosts />} />
             <Route path="/my-doubts" element={<MyDoubts />} />
             <Route path="/my-rooms" element={<MyRooms />} />
 
-            
-
             <Route path="/my-posts/:id/edit" element={<CreatePost />} />
             <Route path="/my-doubts/:id/edit" element={<CreateDoubt />} />
 
             <Route path="/room/:id" element={<Room />} />
-
           </Route>
-
         </Route>
       </Routes>
     </BrowserRouter>

@@ -10,10 +10,10 @@ export default function ProtectedRoute({ children }) {
   }
 
   return user ? (
-    children ?? <Outlet />
+    (children ?? <Outlet />)
   ) : (
     <Navigate
-      to={`/?auth=login&redirect=${encodeURIComponent(location.pathname)}`}
+      to={`/posts?auth=login&redirect=${encodeURIComponent(location.pathname)}`}
       replace
     />
   );

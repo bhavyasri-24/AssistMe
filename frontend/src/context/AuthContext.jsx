@@ -8,15 +8,26 @@ export default function AuthProvider({ children }) {
   const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const storedAccessToken = localStorage.getItem("accessToken");
+    const initializeAuth = () => {
+      const storedUser = localStorage.getItem("user");
+      const storedAccessToken = localStorage.getItem("accessToken");
 
-    if (storedUser && storedAccessToken) {
-      setUser(JSON.parse(storedUser));
-      setAccessToken(storedAccessToken);
-    }
+      if (storedUser && storedAccessToken) {
+        try {
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+          setAccessToken(storedAccessToken);
+        } catch {
+          // Clear corrupted data
+          localStorage.removeItem("user");
+          localStorage.removeItem("accessToken");
+        }
+      }
 
-    setAuthReady(true);
+      setAuthReady(true);
+    };
+
+    initializeAuth();
   }, []);
 
   const login = (data) => {
@@ -30,7 +41,9 @@ export default function AuthProvider({ children }) {
   const logout = async () => {
     try {
       await logoutUser();
-    } catch (error) {}
+    } catch {
+      // Ignore logout errors
+    }
     setUser(null);
     setAccessToken(null);
     localStorage.removeItem("user");
@@ -40,7 +53,9 @@ export default function AuthProvider({ children }) {
   const logoutAllDevices = async () => {
     try {
       await logoutAll();
-    } catch (error) {}
+    } catch {
+      // Ignore logout errors
+    }
     setUser(null);
     setAccessToken(null);
     localStorage.removeItem("user");

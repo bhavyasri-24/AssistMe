@@ -175,6 +175,68 @@ export const handleLogoutAll = async (req, res) => {
   }
 };
 
+export const handleForgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ error: "Email is required" });
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    if (!user) {
+      return res.status(404).json({ error: "No user found with this email" });
+    }
+
+    // Generate reset token (expires in 1 hour)
+    const resetToken = jwt.sign(
+      { userId: user._id, type: 'password-reset' },
+      process.env.ACCESS_SECRET_KEY,
+      { expiresIn: '1h' }
+    );
+
+    // In a real app, you'd send an email with the reset link
+    // For now, we'll return the token (for development)
+    res.status(200).json({
+      message: "Password reset link sent to your email",
+      resetToken: process.env.NODE_ENV === 'development' ? resetToken : undefined
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const handleResetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res.status(400).json({ error: "Token and new password are required" });
+    }
+
+    const decoded = jwt.verify(token, process.env.ACCESS_SECRET_KEY);
+
+    if (decoded.type !== 'password-reset') {
+      return res.status(400).json({ error: "Invalid reset token" });
+    }
+
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successfully" });
+  } catch (error) {
+    res.status(400).json({ error: "Invalid or expired reset token" });
+  }
+};
+
 export const getMe = async (req, res) => {
   res.status(200).json({
     user: req.user,

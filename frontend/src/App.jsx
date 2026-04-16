@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout.jsx";
 
 import Login from "./features/auth/pages/Login.jsx";
-import Register from "./features/auth/pages/Register.jsx";
 import ForgotPassword from "./features/auth/pages/ForgotPassword.jsx";
 import Posts from "./features/posts/pages/Posts.jsx";
 import PostDetails from "./features/posts/pages/PostDetails.jsx";

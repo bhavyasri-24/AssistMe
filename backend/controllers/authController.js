@@ -63,7 +63,7 @@ export const handleLoginUser = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax"
+      sameSite: "none"
     });
     res.status(200).json({
       accessToken,
@@ -132,7 +132,7 @@ export const handleLogout = async (req, res) => {
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax"
+      sameSite: "none"
     });
     res.status(200).json({ msg: "logged out" });
   }
@@ -165,7 +165,7 @@ export const handleLogoutAll = async (req, res) => {
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax"
+      sameSite: "none"
     });
 
     res.status(200).json({ msg: "logged out from all devices" });

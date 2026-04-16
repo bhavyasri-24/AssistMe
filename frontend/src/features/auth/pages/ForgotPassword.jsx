@@ -45,7 +45,7 @@ export default function ForgotPassword() {
       const newPassword = event.target.newPassword.value;
       const res = await resetPassword(token, newPassword);
       setMessage(res.data.message);
-      setTimeout(() => navigate("/login"), 2000);
+      setTimeout(() => navigate("/?auth=login"), 2000);
     } catch (err) {
       setError(err.response?.data?.error || "Failed to reset password");
     } finally {
@@ -90,7 +90,7 @@ export default function ForgotPassword() {
 
         <p className="mt-5 text-sm text-zinc-600">
           Remember your password?{" "}
-          <Link className="font-semibold text-zinc-900 underline" to="/login">
+          <Link className="font-semibold text-zinc-900 underline" to="/?auth=login">
             Back to login
           </Link>
         </p>
@@ -134,7 +134,7 @@ export default function ForgotPassword() {
 
       <p className="mt-5 text-sm text-zinc-600">
         Remember your password?{" "}
-        <Link className="font-semibold text-zinc-900 underline" to="/login">
+        <Link className="font-semibold text-zinc-900 underline" to="/?auth=login">
           Back to login
         </Link>
       </p>

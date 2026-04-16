@@ -56,16 +56,11 @@ export const handleUpdateUserById = async (req, res) => {
   try {
     const { username, email, password, removeAvatar } = req.body;
 
-    const user = await User.findById(req.params.id);
-
+    // Use authenticated user's ID from middleware instead of URL parameter
+    const user = await User.findById(req.userId);
 
     if (!user) {
       return res.status(404).json({ error: "user not found" });
-    }
-
-
-    if (req.userId.toString() !== user._id.toString()) {
-      return res.status(401).json({ error: "unauthorized" });
     }
 
     // 🔥 Basic fields

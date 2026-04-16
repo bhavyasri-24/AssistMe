@@ -24,14 +24,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 const allowedOrigins = [
+  "http://localhost:5173",
   process.env.FRONTEND_URL,
-  "http://localhost:5173", // for local development
-  // Add your Vercel URL here when deployed
 ];
 
 app.use(cors({
-  origin: allowedOrigins,
-  credentials: true
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed"));
+    }
+  },
+  credentials: true,
 }));
 
 app.use("/api/posts", postRouter);
@@ -46,7 +51,10 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: [
+      "http://localhost:5173",
+      process.env.FRONTEND_URL
+    ],
     credentials: true
   }
 });

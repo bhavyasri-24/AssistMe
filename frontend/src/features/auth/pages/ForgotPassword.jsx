@@ -22,7 +22,7 @@ export default function ForgotPassword() {
       if (res.data.resetToken) {
         // In development, automatically redirect with token
         const resetUrl = `/forgot-password?token=${res.data.resetToken}`;
-        setMessage("Reset token generated! Redirecting to reset page...");
+        setMessage("Password reset link sent! Redirecting to reset page...");
         setTimeout(() => {
           navigate(resetUrl);
         }, 1500);
@@ -90,7 +90,10 @@ export default function ForgotPassword() {
 
         <p className="mt-5 text-sm text-zinc-600">
           Remember your password?{" "}
-          <Link className="font-semibold text-zinc-900 underline" to="/?auth=login">
+          <Link
+            className="font-semibold text-zinc-900 underline"
+            to="/?auth=login"
+          >
             Back to login
           </Link>
         </p>
@@ -134,7 +137,10 @@ export default function ForgotPassword() {
 
       <p className="mt-5 text-sm text-zinc-600">
         Remember your password?{" "}
-        <Link className="font-semibold text-zinc-900 underline" to="/?auth=login">
+        <Link
+          className="font-semibold text-zinc-900 underline"
+          to="/?auth=login"
+        >
           Back to login
         </Link>
       </p>

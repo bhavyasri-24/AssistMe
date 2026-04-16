@@ -197,10 +197,10 @@ export const handleForgotPassword = async (req, res) => {
     );
 
     // In a real app, you'd send an email with the reset link
-    // For now, we'll return the token (for development)
+    // For development, always return the token for testing
     res.status(200).json({
       message: "Password reset link sent to your email",
-      resetToken: process.env.NODE_ENV === 'development' ? resetToken : undefined
+      resetToken: resetToken // Always return token for development testing
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

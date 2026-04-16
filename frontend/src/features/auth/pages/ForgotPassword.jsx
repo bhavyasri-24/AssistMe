@@ -19,12 +19,15 @@ export default function ForgotPassword() {
     setIsSubmitting(true);
     try {
       const res = await forgotPassword(email);
-      setMessage(res.data.message);
       if (res.data.resetToken) {
-        // In development, show the token
-        setMessage(
-          `${res.data.message} Development token: ${res.data.resetToken}`,
-        );
+        // In development, automatically redirect with token
+        const resetUrl = `/forgot-password?token=${res.data.resetToken}`;
+        setMessage("Reset token generated! Redirecting to reset page...");
+        setTimeout(() => {
+          navigate(resetUrl);
+        }, 1500);
+      } else {
+        setMessage(res.data.message);
       }
     } catch (err) {
       setError(err.response?.data?.error || "Failed to send reset email");

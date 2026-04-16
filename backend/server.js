@@ -18,12 +18,19 @@ import messageRouter from "./routes/messageRoutes.js";
 dotenv.config();
 connectDB();
 
+
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
+const allowedOrigins = [
+  process.env.FRONTEND_URL || "http://localhost:5173",
+  "http://localhost:5173", // for local development
+  // Add your Vercel URL here when deployed
+];
+
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: allowedOrigins,
   credentials: true
 }));
 
@@ -38,12 +45,12 @@ app.use("/api/messages", messageRouter);
 const server = http.createServer(app);
 
 const io = new Server(server, {
-  cors:{
-    origin: "http://localhost:5173",
+  cors: {
+    origin: allowedOrigins,
     credentials: true
   }
 });
 
 initSocket(io);
 
-server.listen(process.env.PORT);
+server.listen(process.env.PORT || 8000, () => console.log("server running", process.env.PORT));

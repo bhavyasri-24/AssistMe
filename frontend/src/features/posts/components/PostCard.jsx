@@ -248,13 +248,13 @@ export default function PostCard({
         {/* Like */}
         <button
           onClick={() => onLike?.(_id)}
-          className="flex items-center gap-1"
+          className="flex items-center gap-1 cursor-pointer"
         >
           <Heart
             size={16}
             strokeWidth={2}
             fill={isLiked ? "currentColor" : "none"} // 🔥 IMPORTANT
-            className={isLiked ? "text-red-500" : "text-zinc-600"}
+            className={isLiked ? "text-red-500" : "text-zinc-600 "}
           />
           <span>{likesCount}</span>
         </button>

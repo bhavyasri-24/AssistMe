@@ -75,17 +75,32 @@ export default function AuthModal() {
           password: form.password,
         });
 
+        setForm({
+          username: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
+
         setNotice("Account created. Please log in.");
         switchMode("login");
       } else {
         const credential = form.email.trim();
         const response = await loginUser({
-          email: credential.includes("@") ? credential.toLowerCase() : credential,
+          email: credential.includes("@")
+            ? credential.toLowerCase()
+            : credential,
           username: credential,
           password: form.password,
         });
 
         login(response.data);
+        setForm({
+          username: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
         navigate(redirectPath, { replace: true });
       }
     } catch (err) {
@@ -100,13 +115,13 @@ export default function AuthModal() {
   return (
     <div
       className="fixed inset-0 z-70 flex items-center justify-center bg-black/45 p-4"
-      onClick={closeModal} 
+      onClick={closeModal}
     >
       <div
         className={`relative w-full ${
           mode === "signup" ? "max-w-3xl" : "max-w-2xl"
         } rounded-2xl border border-zinc-300 bg-white shadow-xl`}
-        onClick={(e) => e.stopPropagation()} 
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button

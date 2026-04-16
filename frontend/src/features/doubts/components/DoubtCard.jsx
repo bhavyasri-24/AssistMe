@@ -60,13 +60,15 @@ const [activeIndex, setActiveIndex] = useState(0);
         {/* Menu */}
         {isOwner && (
           <div ref={ref} className="relative">
-            <button onClick={() => setMenuOpen(!menuOpen)}>⋮</button>
+            <button onClick={() => setMenuOpen(!menuOpen)} className="cursor-pointer hover:bg-zinc-200 px-2 rounded-2xl">
+              ⋮
+            </button>
 
             {menuOpen && (
               <div className="absolute right-0 mt-2 w-32 bg-white border rounded-md shadow z-50">
                 <Link
                   to={`/my-doubts/${_id}/edit`}
-                  className="block px-3 py-2 text-sm hover:bg-zinc-100"
+                  className="block px-3 py-2 text-sm hover:bg-zinc-100 cursor-pointer"
                 >
                   Edit
                 </Link>
@@ -75,7 +77,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                     setConfirmOpen(true);
                     setMenuOpen(false);
                   }}
-                  className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+                  className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
                 >
                   Delete
                 </button>
@@ -103,7 +105,7 @@ const [activeIndex, setActiveIndex] = useState(0);
     {currentIndex > 0 && (
       <button
         onClick={() => setCurrentIndex((p) => p - 1)}
-        className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
+        className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full cursor-pointer"
       >
         <ChevronLeft size={16} />
       </button>
@@ -112,7 +114,7 @@ const [activeIndex, setActiveIndex] = useState(0);
     {currentIndex < images.length - 1 && (
       <button
         onClick={() => setCurrentIndex((p) => p + 1)}
-        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
+        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full cursor-pointer"
       >
         <ChevronRight size={16} />
       </button>
@@ -145,7 +147,7 @@ const [activeIndex, setActiveIndex] = useState(0);
 
         <div className="flex gap-2">
           {/* Join/View */}
-          <button onClick={() => navigate(`/room/${_id}`)} className="bg-zinc-900 text-white px-3 py-1 text-xs rounded-md">
+          <button onClick={() => navigate(`/room/${_id}`)} className="bg-zinc-900 text-white px-3 py-1 text-xs rounded-md cursor-pointer">
             {isResolved ? "View" : "Join"}
           </button>
 
@@ -153,7 +155,7 @@ const [activeIndex, setActiveIndex] = useState(0);
           {isOwner && (
             <button
               onClick={() => onToggle(_id)}
-              className={`text-xs px-2 py-1 rounded-md border ${
+              className={`text-xs px-2 py-1 rounded-md border cursor-pointer ${
                 isResolved
                   ? "border-green-500 text-green-600"
                   : "border-red-500 text-red-500"

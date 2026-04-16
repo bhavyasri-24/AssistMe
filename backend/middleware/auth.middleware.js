@@ -3,9 +3,14 @@ import User from "../models/user.models.js";
 
 export const auth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
+  const refreshToken = req.cookies.refreshToken; // 👈 ADD THIS
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({ error: "no token" });
+  }
+
+  if (!refreshToken) {
+    return res.status(401).json({ error: "no refresh token" });
   }
 
   const token = authHeader.split(" ")[1];
@@ -19,7 +24,16 @@ export const auth = async (req, res, next) => {
       return res.status(401).json({ error: "user not found" });
     }
 
-    req.user = user;    
+    // 🔥 IMPORTANT: check if session exists
+    const session = user.sessions.find(
+      (session) => session.token === refreshToken
+    );
+
+    if (!session) {
+      return res.status(401).json({ error: "session expired" });
+    }
+
+    req.user = user;
     req.userId = user._id;
     req.userRole = decoded.role;
 

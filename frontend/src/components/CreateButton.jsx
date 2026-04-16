@@ -39,7 +39,7 @@ export default function CreateButton() {
         <>
           <button
             onClick={() => handleClick("post")}
-            className="flex items-center gap-2 rounded-md bg-white px-3 py-2 shadow-md hover:bg-zinc-100"
+            className="flex items-center gap-2 rounded-md bg-white px-3 py-2 shadow-md hover:bg-zinc-100 cursor-pointer"
           >
             <PenLine size={18} />
             <span className="text-sm">Post</span>
@@ -47,7 +47,7 @@ export default function CreateButton() {
 
           <button
             onClick={() => handleClick("doubt")}
-            className="flex items-center gap-2 rounded-md bg-white px-3 py-2 shadow-md hover:bg-zinc-100"
+            className="flex items-center gap-2 rounded-md bg-white px-3 py-2 shadow-md hover:bg-zinc-100 cursor-pointer"
           >
             <MessageCircleQuestionMark size={18} />
             <span className="text-sm">Doubt</span>
@@ -57,7 +57,7 @@ export default function CreateButton() {
 
       {/* Main Button */}
       <button
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-zinc-900 text-white shadow-lg hover:bg-zinc-800 transition"
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-zinc-900 text-white shadow-lg hover:bg-zinc-800 transition cursor-pointer"
       >
         <Plus size={22} />
       </button>

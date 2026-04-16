@@ -100,7 +100,7 @@ export default function Room() {
                 className={`max-w-[70%] px-3 py-2 rounded-lg text-sm ${
                   isMe
                     ? "bg-black text-white rounded-br-none"
-                    : "bg-zinc-200 text-black rounded-bl-none"
+                    : "bg-zinc-200 text-zinc-800 rounded-bl-none"
                 }`}
               >
                 {/* Username */}
@@ -146,7 +146,7 @@ export default function Room() {
 
         <button
           onClick={sendMessage}
-          className="bg-zinc-900 text-white px-4 py-2 rounded-md text-sm"
+          className="bg-zinc-700 text-white px-4 py-2 rounded-md text-sm cursor-pointer"
         >
           Send
         </button>

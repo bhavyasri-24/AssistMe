@@ -104,13 +104,13 @@ export default function Navbar() {
   const handleLogout = async () => {
     await logout();
     closeMobileSidebar();
-    navigate("/login");
+    navigate("/");
   };
 
   const handleLogoutAllDevices = async () => {
     await logoutAllDevices();
     closeMobileSidebar();
-    navigate("/login");
+    navigate("/");
   };
 
   const baseLinkClass =
@@ -288,7 +288,7 @@ export default function Navbar() {
                 )}
               </span>
               {isCollapsed && (
-                <span className="pointer-events-none absolute left-12 top-1/2 z-50 -translate-y-1/2 rounded-md border border-zinc-300 bg-zinc-200 px-2 py-1 text-xs text-zinc-900 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                <span className="pointer-events-none absolute left-12 top-1/2 z-50 -translate-y-1/2 rounded-md border border-zinc-300 bg-zinc-200 px-2 py-1 text-xs text-zinc-900 opacity-0 transition-opacity duration-150 group-hover:opacity-100 cursor-pointer">
                   My activity
                 </span>
               )}
@@ -388,7 +388,7 @@ export default function Navbar() {
                   setShowProfileMenu((prev) => !prev);
                 }}
               >
-                <span className="flex items-center gap-2">
+                <span className="flex items-center gap-2 cursor-pointer">
                   <Avatar
                     round
                     size="36"
